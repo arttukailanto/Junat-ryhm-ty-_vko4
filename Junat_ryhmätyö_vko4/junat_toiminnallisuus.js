@@ -1,29 +1,29 @@
-﻿var xhr;
-xhr = new XMLHttpRequest();
-xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-            //document.getElementById("lista").innerHTML = xhr.responseText;     //Tämä tulostaa kaiken junadatan sivuille ja consoliin
-            //Tästä eteenpäin oleva koodi laittaa response textin JSON.parseksi ja hakee sitten taulukon alkioilla tietoa html listaan-Arttu
-            console.log(xhr.responseText);
-            var taulukko = JSON.parse(xhr.responseText);
-            for (var i = 0; i < taulukko.length; i++) {
-                //Tässä luodaan var optiot, jotta kellonaika saadaan näkymään järkevämmässä muodossa haun jälkeen-Arttu
-                var optiot = { hour: '2-digit', minute: '2-digit', hour12: false };
-                var juna = taulukko[i]
-                console.log(taulukko);
-                var aika = new Date(juna.timeTableRows[0].scheduledTime).toLocaleTimeString("fi-fi", optiot);
-                // uutta aikaa käytetään kun lähtöaikaa tulostetaan-Arttu
-                document.getElementById("lista").innerHTML += "<li>" + taulukko[i].trainNumber + " " + taulukko[i].trainType + " lähtee klo. " + new Date(juna.timeTableRows[0].scheduledTime).toLocaleTimeString("fi-fi", optiot);
-            }
-        }
-    }
-}
-function Hae() {
-    xhr.open("GET", "https://rata.digitraffic.fi/api/v1/live-trains/station/HKI/TPE", true);
-    xhr.send(null);
-    console.log("Hae()");
-}
+﻿//var xhr;
+//xhr = new XMLHttpRequest();
+//xhr.onreadystatechange = function () {
+//    if (xhr.readyState === 4) {
+//        if (xhr.status === 200) {
+//            //document.getElementById("lista").innerHTML = xhr.responseText;     //Tämä tulostaa kaiken junadatan sivuille ja consoliin
+//            //Tästä eteenpäin oleva koodi laittaa response textin JSON.parseksi ja hakee sitten taulukon alkioilla tietoa html listaan-Arttu
+//            console.log(xhr.responseText);
+//            var taulukko = JSON.parse(xhr.responseText);
+//            for (var i = 0; i < taulukko.length; i++) {
+//                //Tässä luodaan var optiot, jotta kellonaika saadaan näkymään järkevämmässä muodossa haun jälkeen-Arttu
+//                var optiot = { hour: '2-digit', minute: '2-digit', hour12: false };
+//                var juna = taulukko[i]
+//                console.log(taulukko);
+//                var aika = new Date(juna.timeTableRows[0].scheduledTime).toLocaleTimeString("fi-fi", optiot);
+//                // uutta aikaa käytetään kun lähtöaikaa tulostetaan-Arttu
+//                document.getElementById("lista").innerHTML += "<li>" + taulukko[i].trainNumber + " " + taulukko[i].trainType + " lähtee klo. " + new Date(juna.timeTableRows[0].scheduledTime).toLocaleTimeString("fi-fi", optiot) + " saapuu klo. " + new Date(juna.timeTableRows[89].scheduledTime).toLocaleTimeString("fi-fi", optiot) ;
+//            }
+//        }
+//    }
+//}
+//function Hae() {
+//    xhr.open("GET", "https://rata.digitraffic.fi/api/v1/live-trains/station/HKI/TPE", true);
+//    xhr.send(null);
+//    console.log("Hae()");
+
 var name = document.getElementById('name');
 var pw = document.getElementById('pw');
 
@@ -50,3 +50,31 @@ function check() {
         alert('You are loged in.');
     }
 }
+var xhr;
+xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function () {
+    console.dir(xhr);
+    if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+            //document.getElementById("lista").innerHTML = xhr.responseText;     //Tämä tulostaa kaiken junadatan sivuille ja consoliin
+            //Tässä luodaan JSON.parse lista asemien nimistä ja lyhenteistä-Arttu
+            console.log(xhr.responseText);
+            var taul_asemat = JSON.parse(xhr.responseText);
+            for (var i = 0; i < taul_asemat.length; i++) {
+                // var asemat = taul_asemat[i]
+                //Tämä laittaa asemien nimet ja shortnimet optionvalueihin
+                console.dir(taul_asemat[i]);
+                document.getElementById("asemien_nimet").innerHTML += "<option value='" + taul_asemat[i].stationShortCode + "'>" + taul_asemat[i].stationName + "</option>";
+            }
+        }
+    }
+}
+
+
+function Hae() {
+    console.log("Hae()");
+    xhr.open("GET", "https://rata.digitraffic.fi/api/v1/metadata/stations", true);
+    xhr.send(null);
+
+}
+Hae();

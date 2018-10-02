@@ -25,8 +25,45 @@
     <script type="text/javascript" language="javascript" src="junat_toiminnallisuus.js"></script>
     <br />
 
-    <input type=button onclick="Hae()" value="Aloita haku" />
-    <ol id="lista"></ol>
+    <!--<input type=button onclick="Hae()" value="Aloita haku" />
+    <ol id="lista"></ol>-->
+    <!--Select-tag määrittelee alasvetovalikon, id "Valikko". Vaihtoehdoile on määritelty arvot, joihin voidaan viitata.
+           Tähän yhdistetty myös tapahtumakäsittelijä -> klikkauksella suoritetaan funktio "valinta". -->
+    <p>Valitse tästä</p>
+    <select id="Valikko" onclick="valinta()">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="Helsinki">Helsinki</option>
+    </select>
 
+    <!--"valinta"-funktiossa määritellään muuttuja käyttäjänValinta, joka saa "Valikko"-elementin arvon.
+        Muuttujan arvo tallennetaan localstorageen (key: valinta). -->
+    <script>
+
+        function valinta() {
+            var käyttäjänValinta = document.getElementById("Valikko").value;
+            localStorage.setItem("valinta", käyttäjänValinta);
+
+        }
+
+        /* Funktio käyttäjänAsetus, joka suoritetaan heti määrittelyn jälkeen. Tämän avulla palautetaan käyttäjän edellinen valinta oletuksena.
+        *  Määritellään muuttuja edellinenValinta, joka saa arvon localstoragesta (key: valinta)
+        *  "Valikko"-elementin arvoksi asetetaan edellinenValinta-muuttujan arvo. */
+
+        function käyttäjänAsetus() {
+
+            var edellinenValinta = localStorage.getItem("valinta");
+
+            document.getElementById("Valikko").value = edellinenValinta;
+
+        }
+        käyttäjänAsetus();
+    </script>
+    Lähtöasemanappi
+    <input list="asemien_nimet">
+    <datalist id="asemien_nimet"></datalist>
+    Saapumisasemanappi
+    <input list="asemien_nimet">
+    <datalist id="asemien_nimet"></datalist>
 </body>
 </html>
