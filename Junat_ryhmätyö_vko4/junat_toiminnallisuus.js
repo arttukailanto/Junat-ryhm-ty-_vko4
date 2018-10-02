@@ -24,3 +24,29 @@ function Hae() {
     xhr.send(null);
     console.log("Hae()");
 }
+var name = document.getElementById('name');
+var pw = document.getElementById('pw');
+
+// Tietojen tallennus lomakkeelle
+function store() {
+    localStorage.setItem('name', name.value);
+    localStorage.setItem('pw', pw.value);
+}
+    // tarkistaa että tallennettu tieto vastaa syötettyä tietoa
+function check() {
+
+    // Rekisteröitymislomakkeen tallennettu tieto
+    var storedName = localStorage.getItem('name');
+    var storedPw = localStorage.getItem('pw');
+
+    // Kirjautumislomakkeen syötetty tieto
+    var userName = document.getElementById('userName');
+    var userPw = document.getElementById('userPw');
+
+    // tarkista että rekisteröintilomakkeen tallennettu tieto vastaa kirjautumistietoja
+    if (userName.value !== storedName || userPw.value !== storedPw) {
+        alert('ERROR');
+    } else {
+        alert('You are loged in.');
+    }
+}

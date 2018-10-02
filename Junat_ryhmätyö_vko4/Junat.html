@@ -5,8 +5,26 @@
     <title>Junien haku</title>
     <link href="Junat_tyyli.css" rel="stylesheet" />
     <script src="junat_toiminnallisuus.js"></script>
+    <script src="Scripts/jquery-3.3.1.js"></script>
 </head>
 <body>
+
+    <form id="register-form">
+        <input id="name" type="text" placeholder="Nimi" value="" />
+        <input id="pw" type="password" placeholder="Salasana" value="" />
+        <input id="rgstr_btn" type="submit" value="Luo tili" onClick="store()" />
+    </form>
+
+    <form id="login-form">
+        <input id="userName" type="text" placeholder="Lisää käyttäjänimi" value="" />
+        <input id="userPw" type="password" placeholder="Lisää salasana" value="" />
+        <input id="login_btn" type="submit" value="Kirjaudu" onClick="check()" />
+    </form>
+
+    <script type="text/javascript" src="jquery-3.3.1.js"></script>
+    <script type="text/javascript" language="javascript" src="junat_toiminnallisuus.js"></script>
+    <br />
+
     <input type=button onclick="Hae()" value="Aloita haku" />
     <ol id="lista"></ol>
 
