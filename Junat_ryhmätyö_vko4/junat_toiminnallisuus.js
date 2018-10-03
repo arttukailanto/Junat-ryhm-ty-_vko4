@@ -77,15 +77,9 @@ function haedataAika() {
 
 function getSaapumisaika(timetablerows, asema) {
 
-    var sr = timetablerows.find(tr => tr.stationShortCode == asema);
+    var sr = timetablerows.find(tr => tr.stationShortCode === asema);
     return sr.scheduledTime;
 }
-
-
-
-
-
-
 
 
 
@@ -115,6 +109,48 @@ function check() {
         alert('You are logged in.');
     }
 }
+
+
+function valinta_lähtö() {
+    var Valinta_lähtö = document.getElementById("lähtövalinta").value;
+    localStorage.setItem("valinta", Valinta_lähtö);
+
+}
+
+/* Funktio käyttäjänAsetus, joka suoritetaan heti määrittelyn jälkeen. Tämän avulla palautetaan käyttäjän edellinen valinta oletuksena.
+*  Määritellään muuttuja edellinenValinta, joka saa arvon localstoragesta
+*  "lähtövalinta"-elementin arvoksi asetetaan edellinenValinta-muuttujan arvo. */
+
+function käyttäjänAsetus_lähtö() {
+
+    var edellinenValinta = localStorage.getItem("valinta");
+
+    document.getElementById("lähtövalinta").value = edellinenValinta;
+
+}
+käyttäjänAsetus_lähtö();
+
+
+
+
+
+/*Määränpääaseman tallennus: */
+
+function valinta_määränpää() {
+    var Valinta_määränpää = document.getElementById("kohdevalinta").value;
+    localStorage.setItem("valinta2", Valinta_määränpää);
+
+}
+
+function käyttäjänAsetus_kohde() {
+
+    var edellinenValinta = localStorage.getItem("valinta2");
+
+    document.getElementById("kohdevalinta").value = edellinenValinta;
+
+}
+käyttäjänAsetus_kohde();
+
 var xhr;
 xhr = new XMLHttpRequest();
 xhr.onreadystatechange = function () {
@@ -134,6 +170,7 @@ xhr.onreadystatechange = function () {
         }
     }
 }
+
 
 
 function Hae() {

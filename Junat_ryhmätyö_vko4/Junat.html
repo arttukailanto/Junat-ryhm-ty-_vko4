@@ -13,7 +13,7 @@
     <form id="register-form">
         <input id="name" type="text" placeholder="Nimi" value="" />
         <input id="pw" type="password" placeholder="Salasana" value="" />
-        <input id="rgstr_btn" type="submit" value="Luo tili" onClick ="store()" />
+        <input id="rgstr_btn" type="submit" value="Luo tili" onClick="store()" />
     </form>
 
     <form id="login-form">
@@ -21,8 +21,6 @@
         <input id="userPw" type="password" placeholder="Lisää salasana" value="" />
         <input id="login_btn" type="submit" value="Kirjaudu" onClick="check()" />
     </form>
-
-
 
 
     <br />
@@ -33,14 +31,23 @@
     <button onclick="haedataAika()" id="btn2">Hae data ajalla</button>
     <hr />
 
-   
-    
-    Lähtöasemanappi
-    <input list="asemien_nimet" name="lahtoAsemat">
+
+
+    Valitse lähtöasema:
+    <br />
+    <br />
+    <input list="asemien_nimet" name="lahtoAsemat" id="lähtövalinta" onchange="valinta_lähtö()">
     <datalist id="asemien_nimet"></datalist>
-    Saapumisasemanappi
-    <input list="asemien_nimet" name="saapumisAsemat">
+
+    <br />
+    <br />
+
+    Valitse määränpää:
+    <br />
+    <br />
+    <input list="asemien_nimet" name="saapumisAsemat" id="kohdevalinta" onchange="valinta_määränpää()">
     <datalist id="asemien_nimet"></datalist>
+
 
 
     <ol id="lista"></ol>
