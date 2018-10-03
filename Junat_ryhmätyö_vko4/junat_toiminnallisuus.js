@@ -1,34 +1,99 @@
-﻿//var xhr;
-//xhr = new XMLHttpRequest();
-//xhr.onreadystatechange = function () {
-//    if (xhr.readyState === 4) {
-//        if (xhr.status === 200) {
-//            //document.getElementById("lista").innerHTML = xhr.responseText;     //Tämä tulostaa kaiken junadatan sivuille ja consoliin
-//            //Tästä eteenpäin oleva koodi laittaa response textin JSON.parseksi ja hakee sitten taulukon alkioilla tietoa html listaan-Arttu
-//            console.log(xhr.responseText);
-//            var taulukko = JSON.parse(xhr.responseText);
-//            for (var i = 0; i < taulukko.length; i++) {
-//                //Tässä luodaan var optiot, jotta kellonaika saadaan näkymään järkevämmässä muodossa haun jälkeen-Arttu
-//                var optiot = { hour: '2-digit', minute: '2-digit', hour12: false };
-//                var juna = taulukko[i]
-//                console.log(taulukko);
-//                var aika = new Date(juna.timeTableRows[0].scheduledTime).toLocaleTimeString("fi-fi", optiot);
-//                // uutta aikaa käytetään kun lähtöaikaa tulostetaan-Arttu
-//                document.getElementById("lista").innerHTML += "<li>" + taulukko[i].trainNumber + " " + taulukko[i].trainType + " lähtee klo. " + new Date(juna.timeTableRows[0].scheduledTime).toLocaleTimeString("fi-fi", optiot) + " saapuu klo. " + new Date(juna.timeTableRows[89].scheduledTime).toLocaleTimeString("fi-fi", optiot) ;
-//            }
-//        }
-//    }
-//}
-//function Hae() {
-//    xhr.open("GET", "https://rata.digitraffic.fi/api/v1/live-trains/station/HKI/TPE", true);
-//    xhr.send(null);
-//    console.log("Hae()");
+﻿
+var nyt = new Date();
+Date.prototype.addHours = function (h) {
+    this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+    return this;
+}
+nyt.addHours(3);
+$("#alkuaika").val(nyt.toISOString().slice(0, -8));
+console.log(nyt.toISOString().slice(0, -5));
+nyt.addHours(3);
+$("#loppuaika").val(nyt.toISOString().slice(0, -8));
+var baseurl = "https://rata.digitraffic.fi/api/v1";
+var loppuurl = "/live-trains/station/";
+var lahtoasema = " ";
+var saapumisasema = " ";
+var optiot = { hour: '2-digit', minute: '2-digit', hour12: false };
 
-var name = document.getElementById('name');
-var pw = document.getElementById('pw');
+$("input[name=lahtoAsemat]").focusout(function () {
+   // alert($(this).val());
+    lahtoasema = ($(this).val());
+});
+
+$("input[name=saapumisAsemat]").focusout(function () {
+    // alert($(this).val());
+    saapumisasema = ($(this).val());
+});
+
+
+
+
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function () {
+    if (xmlhttp.readyState === 4) {
+        if (xmlhttp.status === 200) {
+
+            var tulos = JSON.parse(xmlhttp.responseText);
+            console.dir(tulos);
+            for (var i = 0; i < tulos.length; ++i) {
+                var elem = document.createElement("li");
+                var juna = tulos[i];
+                var lahtoaika = new Date(juna.timeTableRows[0].scheduledTime).toLocaleTimeString("fi", { hour: '2-digit', minute: '2-digit', hour12: false });
+                var saapumisaika = new Date(getSaapumisaika(juna.timeTableRows, saapumisasema)).toLocaleTimeString("fi", optiot);
+                elem.appendChild(document.createTextNode(juna.trainType + juna.trainNumber + ", lähtee: " + lahtoaika + " saapuu: " + saapumisaika));
+                lista.appendChild(elem);
+            }
+            //document.getElementById("hae").innerText = "Hae data uudestaan painamalla nappulaa:";
+           // document.getElementById("btn").style.visibility = "visible";
+        } else {
+            alert("Pyyntö epäonnistui");
+            document.getElementById("hae").innerText = "Hae data uudestaan painamalla nappulaa:";
+            document.getElementById("btn").style.visibility = "visible";
+        }
+    }
+
+};
+var lista = document.getElementById("lista");
+function haedatat() {
+    $("#lista").empty();
+    xmlhttp.open('get', baseurl + loppuurl + lahtoasema +"/"+ saapumisasema);
+    xmlhttp.send();
+}
+//haedatat();
+function haedataAika() {
+    $("#lista").empty();
+    var alkuaika = new Date($("#alkuaika").val());
+    console.dir(alkuaika);
+    console.log(alkuaika.toISOString());
+    var loppuaika = new Date($("#loppuaika").val());
+    console.dir(loppuaika);
+    var startfilter = "startDate=" + alkuaika.toISOString();
+    var endfilter = "endDate=" + loppuaika.toISOString();
+    var url = baseurl + loppuurl + lahtoasema + saapumisasema + "?" + startfilter + "&" + endfilter;
+    console.log(url);
+    xmlhttp.open('get', url);
+    xmlhttp.send(null);
+}
+
+function getSaapumisaika(timetablerows, asema) {
+
+    var sr = timetablerows.find(tr => tr.stationShortCode == asema);
+    return sr.scheduledTime;
+}
+
+
+
+
+
+
+
+
 
 // Tietojen tallennus lomakkeelle
 function store() {
+    var name = document.getElementById('name');
+    var pw = document.getElementById('pw');
+
     localStorage.setItem('name', name.value);
     localStorage.setItem('pw', pw.value);
 }
@@ -47,7 +112,7 @@ function check() {
     if (userName.value !== storedName || userPw.value !== storedPw) {
         alert('ERROR');
     } else {
-        alert('You are loged in.');
+        alert('You are logged in.');
     }
 }
 var xhr;

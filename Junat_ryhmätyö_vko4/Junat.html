@@ -4,15 +4,16 @@
     <meta charset="utf-8" />
     <title>Junien haku</title>
     <link href="Junat_tyyli.css" rel="stylesheet" />
-    <script src="junat_toiminnallisuus.js"></script>
-    <script src="Scripts/jquery-3.3.1.js"></script>
+  
+    <!--  <script type="text/javascript" language="javascript" src="junat_toiminnallisuus.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 
     <form id="register-form">
         <input id="name" type="text" placeholder="Nimi" value="" />
         <input id="pw" type="password" placeholder="Salasana" value="" />
-        <input id="rgstr_btn" type="submit" value="Luo tili" onClick="store()" />
+        <input id="rgstr_btn" type="submit" value="Luo tili" onClick ="store()" />
     </form>
 
     <form id="login-form">
@@ -21,49 +22,28 @@
         <input id="login_btn" type="submit" value="Kirjaudu" onClick="check()" />
     </form>
 
-    <script type="text/javascript" src="jquery-3.3.1.js"></script>
-    <script type="text/javascript" language="javascript" src="junat_toiminnallisuus.js"></script>
+
+
+
     <br />
 
-    <!--<input type=button onclick="Hae()" value="Aloita haku" />
-    <ol id="lista"></ol>-->
-    <!--Select-tag määrittelee alasvetovalikon, id "Valikko". Vaihtoehdoile on määritelty arvot, joihin voidaan viitata.
-           Tähän yhdistetty myös tapahtumakäsittelijä -> klikkauksella suoritetaan funktio "valinta". -->
-    <p>Valitse tästä</p>
-    <select id="Valikko" onclick="valinta()">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="Helsinki">Helsinki</option>
-    </select>
+    Lähtöaika:  <input type="datetime-local" id="alkuaika" /> <br />
+    Saapumisaika:<input type="datetime-local" id="loppuaika" /> <br />
+    <button onclick="haedatat()" id="btn">Hae data</button>
+    <button onclick="haedataAika()" id="btn2">Hae data ajalla</button>
+    <hr />
 
-    <!--"valinta"-funktiossa määritellään muuttuja käyttäjänValinta, joka saa "Valikko"-elementin arvon.
-        Muuttujan arvo tallennetaan localstorageen (key: valinta). -->
-    <script>
-
-        function valinta() {
-            var käyttäjänValinta = document.getElementById("Valikko").value;
-            localStorage.setItem("valinta", käyttäjänValinta);
-
-        }
-
-        /* Funktio käyttäjänAsetus, joka suoritetaan heti määrittelyn jälkeen. Tämän avulla palautetaan käyttäjän edellinen valinta oletuksena.
-        *  Määritellään muuttuja edellinenValinta, joka saa arvon localstoragesta (key: valinta)
-        *  "Valikko"-elementin arvoksi asetetaan edellinenValinta-muuttujan arvo. */
-
-        function käyttäjänAsetus() {
-
-            var edellinenValinta = localStorage.getItem("valinta");
-
-            document.getElementById("Valikko").value = edellinenValinta;
-
-        }
-        käyttäjänAsetus();
-    </script>
+   
+    
     Lähtöasemanappi
-    <input list="asemien_nimet">
+    <input list="asemien_nimet" name="lahtoAsemat">
     <datalist id="asemien_nimet"></datalist>
     Saapumisasemanappi
-    <input list="asemien_nimet">
+    <input list="asemien_nimet" name="saapumisAsemat">
     <datalist id="asemien_nimet"></datalist>
+
+
+    <ol id="lista"></ol>
+    <script src="junat_toiminnallisuus.js"></script>
 </body>
 </html>
