@@ -9,19 +9,23 @@ $("#alkuaika").val(nyt.toISOString().slice(0, -8));
 console.log(nyt.toISOString().slice(0, -5));
 nyt.addHours(3);
 $("#loppuaika").val(nyt.toISOString().slice(0, -8));
-var baseurl = "https://rata.digitraffic.fi/api/v1";
-var loppuurl = "/live-trains/station/";
+
+var alkuRimpsu = "https://rata.digitraffic.fi/api/v1/live-trains/station/";
 var lahtoasema = " ";
 var saapumisasema = " ";
 var optiot = { hour: '2-digit', minute: '2-digit', hour12: false };
 
+
+
+
+
 $("input[name=lahtoAsemat]").focusout(function () {
-   // alert($(this).val());
+   
     lahtoasema = ($(this).val());
 });
 
 $("input[name=saapumisAsemat]").focusout(function () {
-    // alert($(this).val());
+    
     saapumisasema = ($(this).val());
 });
 
@@ -46,7 +50,7 @@ xmlhttp.onreadystatechange = function () {
             //document.getElementById("hae").innerText = "Hae data uudestaan painamalla nappulaa:";
            // document.getElementById("btn").style.visibility = "visible";
         } else {
-            alert("Pyyntö epäonnistui");
+            alert("Asemien välillä ei välttämättä ole suoria yhteyksiä.");
             document.getElementById("hae").innerText = "Hae data uudestaan painamalla nappulaa:";
             document.getElementById("btn").style.visibility = "visible";
         }
@@ -56,24 +60,10 @@ xmlhttp.onreadystatechange = function () {
 var lista = document.getElementById("lista");
 function haedatat() {
     $("#lista").empty();
-    xmlhttp.open('get', baseurl + loppuurl + lahtoasema +"/"+ saapumisasema);
+    xmlhttp.open('get', alkuRimpsu + lahtoasema +"/"+ saapumisasema);
     xmlhttp.send();
 }
-//haedatat();
-function haedataAika() {
-    $("#lista").empty();
-    var alkuaika = new Date($("#alkuaika").val());
-    console.dir(alkuaika);
-    console.log(alkuaika.toISOString());
-    var loppuaika = new Date($("#loppuaika").val());
-    console.dir(loppuaika);
-    var startfilter = "startDate=" + alkuaika.toISOString();
-    var endfilter = "endDate=" + loppuaika.toISOString();
-    var url = baseurl + loppuurl + lahtoasema + saapumisasema + "?" + startfilter + "&" + endfilter;
-    console.log(url);
-    xmlhttp.open('get', url);
-    xmlhttp.send(null);
-}
+
 
 function getSaapumisaika(timetablerows, asema) {
 
@@ -88,6 +78,7 @@ function store() {
     var name = document.getElementById('name');
     var pw = document.getElementById('pw');
 
+    //Tässä laitetaan nämä tiedot arrayhin
     localStorage.setItem('name', name.value);
     localStorage.setItem('pw', pw.value);
 }
@@ -106,29 +97,29 @@ function check() {
     if (userName.value !== storedName || userPw.value !== storedPw) {
         alert('ERROR');
     } else {
-        alert('You are logged in.');
+        alert(storedName+', sinä onnistuit!');
     }
 }
 
 
-function valinta_lähtö() {
-    var Valinta_lähtö = document.getElementById("lähtövalinta").value;
-    localStorage.setItem("valinta", Valinta_lähtö);
+//function valinta_lähtö() {
+//    var Valinta_lähtö = document.getElementById("lähtövalinta").value;
+//    localStorage.setItem("valinta", Valinta_lähtö);
 
-}
+//}
 
-/* Funktio käyttäjänAsetus, joka suoritetaan heti määrittelyn jälkeen. Tämän avulla palautetaan käyttäjän edellinen valinta oletuksena.
-*  Määritellään muuttuja edellinenValinta, joka saa arvon localstoragesta
-*  "lähtövalinta"-elementin arvoksi asetetaan edellinenValinta-muuttujan arvo. */
+///* Funktio käyttäjänAsetus, joka suoritetaan heti määrittelyn jälkeen. Tämän avulla palautetaan käyttäjän edellinen valinta oletuksena.
+//*  Määritellään muuttuja edellinenValinta, joka saa arvon localstoragesta
+//*  "lähtövalinta"-elementin arvoksi asetetaan edellinenValinta-muuttujan arvo. */
 
-function käyttäjänAsetus_lähtö() {
+//function käyttäjänAsetus_lähtö() {
 
-    var edellinenValinta = localStorage.getItem("valinta");
+//    var edellinenValinta = localStorage.getItem("valinta");
 
-    document.getElementById("lähtövalinta").value = edellinenValinta;
+//    document.getElementById("lähtövalinta").value = edellinenValinta;
 
-}
-käyttäjänAsetus_lähtö();
+//}
+//käyttäjänAsetus_lähtö();
 
 
 
@@ -136,20 +127,20 @@ käyttäjänAsetus_lähtö();
 
 /*Määränpääaseman tallennus: */
 
-function valinta_määränpää() {
-    var Valinta_määränpää = document.getElementById("kohdevalinta").value;
-    localStorage.setItem("valinta2", Valinta_määränpää);
+//function valinta_määränpää() {
+//    var Valinta_määränpää = document.getElementById("kohdevalinta").value;
+//    localStorage.setItem("valinta2", Valinta_määränpää);
 
-}
+//}
 
-function käyttäjänAsetus_kohde() {
+//function käyttäjänAsetus_kohde() {
 
-    var edellinenValinta = localStorage.getItem("valinta2");
+//    var edellinenValinta = localStorage.getItem("valinta2");
 
-    document.getElementById("kohdevalinta").value = edellinenValinta;
+//    document.getElementById("kohdevalinta").value = edellinenValinta;
 
-}
-käyttäjänAsetus_kohde();
+//}
+//käyttäjänAsetus_kohde();
 
 var xhr;
 xhr = new XMLHttpRequest();
@@ -164,6 +155,8 @@ xhr.onreadystatechange = function () {
             for (var i = 0; i < taul_asemat.length; i++) {
                 // var asemat = taul_asemat[i]
                 //Tämä laittaa asemien nimet ja shortnimet optionvalueihin
+
+
                 console.dir(taul_asemat[i]);
                 document.getElementById("asemien_nimet").innerHTML += "<option value='" + taul_asemat[i].stationShortCode + "'>" + taul_asemat[i].stationName + "</option>";
             }
