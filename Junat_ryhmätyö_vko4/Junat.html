@@ -8,7 +8,8 @@
    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
-<body>
+<body onload="GeoHaku()">
+
 
     <form id="register-form">
         <input id="name" type="text" placeholder="Nimi" value="" />
@@ -26,19 +27,17 @@
     <br />
 
     Lähtöaika:  <input type="datetime-local" id="alkuaika" /> <br />
+
+
+
  
-    <button onclick="haedatat()" id="btn">Hae aikataulut</button>
-    
-    <hr />
 
 
 
     Valitse lähtöasema:
     <br />
     <br />
-    <input list="asemien_nimet" name="lahtoAsemat" id="lähtövalinta" onchange="valinta_lähtö()">
-    <datalist id="asemien_nimet"></datalist>
-
+    <input list="asemien_nimet" name="lahtoAsemat" id="lähtövalinta">
     <br />
     <br />
 
@@ -46,11 +45,14 @@
     <br />
     <br />
     <input list="asemien_nimet" name="saapumisAsemat" id="kohdevalinta" onchange="valinta_määränpää()">
-    <datalist id="asemien_nimet"></datalist>
+    <datalist id="asemien_nimet"></datalist><br /><br />
 
-
+    <button onclick="haedatat()" id="btn">Hae aikataulut</button>
 
     <ol id="lista"></ol>
     <script src="junat_toiminnallisuus.js"></script>
+
+    <!--<input type="button" onclick="GeoHaku()" value="Paikkatieto" />-->
+    <input type="button" onclick="Etäisyys()" value="Aseta lähin asema lähtöasemaksi" />
 </body>
-    </html>
+</html>

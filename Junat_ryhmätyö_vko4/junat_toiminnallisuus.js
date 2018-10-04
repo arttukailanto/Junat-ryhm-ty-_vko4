@@ -95,7 +95,7 @@ function check() {
 
     // tarkista että rekisteröintilomakkeen tallennettu tieto vastaa kirjautumistietoja
     if (userName.value !== storedName || userPw.value !== storedPw) {
-        alert('ERROR');
+        alert('Sinä epäonnistuit');
     } else {
         alert(storedName+', sinä onnistuit!');
     }
@@ -103,8 +103,8 @@ function check() {
 
 
 //function valinta_lähtö() {
-//    var Valinta_lähtö = document.getElementById("lähtövalinta").value;
-//    localStorage.setItem("valinta", Valinta_lähtö);
+  //  var Valinta_lähtö = document.getElementById("lähtövalinta").value;
+   // localStorage.setItem("valinta", Valinta_lähtö);
 
 //}
 
@@ -127,8 +127,8 @@ function check() {
 
 /*Määränpääaseman tallennus: */
 
-//function valinta_määränpää() {
-//    var Valinta_määränpää = document.getElementById("kohdevalinta").value;
+// valinta_määränpää() {
+  //  var Valinta_määränpää = document.getElementById("kohdevalinta").value;
 //    localStorage.setItem("valinta2", Valinta_määränpää);
 
 //}
@@ -158,7 +158,10 @@ xhr.onreadystatechange = function () {
 
 
                 console.dir(taul_asemat[i]);
-                document.getElementById("asemien_nimet").innerHTML += "<option value='" + taul_asemat[i].stationShortCode + "'>" + taul_asemat[i].stationName + "</option>";
+                if (taul_asemat[i].passengerTraffic === true) {
+                    document.getElementById("asemien_nimet").innerHTML += "<option value='" + taul_asemat[i].stationShortCode + "'>" + taul_asemat[i].stationName + "</option>";
+                }
+                
             }
         }
     }
@@ -173,3 +176,100 @@ function Hae() {
 
 }
 Hae();
+
+var long;
+var lati;
+function GeoHaku() {
+    navigator.geolocation.getCurrentPosition(
+        function (loc) {
+            long = loc.coords.longitude;
+            lati = loc.coords.latitude;
+            //document.getElementById("lista").innerHTML = ('leveyspiiri: ' + loc.coords.latitude + " " + 'pituuspiiri: ' + loc.coords.longitude);
+            //nearestStation(lati, long);
+        },
+        function (errordata) {
+            console.log('virhe:' + errordata.message);
+        },
+        { enableHighAccuracy: true }
+    );
+}
+function Etäisyys() {
+    var AsemanLokaatio;
+    var asemanlong;
+    var asemanlat;
+    AsemanLokaatio = new XMLHttpRequest();
+    AsemanLokaatio.onreadystatechange = function () {
+        console.dir(AsemanLokaatio);
+        if (AsemanLokaatio.readyState === 4) {
+            if (AsemanLokaatio.status === 200) {
+                //console.log(AsemanLokaatio.responseText);
+                var taul_asemat = JSON.parse(AsemanLokaatio.responseText);
+                getNearestStation(taul_asemat);
+                for (var i = 0; i < taul_asemat.length; i++) {
+                    if (taul_asemat[i].passengerTraffic === true) {
+                        asemanlong = taul_asemat[i].longitude;
+                        asemanlat = taul_asemat[i].latitude;
+                    }
+                    //console.dir(taul_asemat[i]);
+                   
+                    //document.getElementById("lista").innerHTML += "<li>" + taul_asemat[i].stationShortCode + "  " + taul_asemat[i].longitude + "  " + taul_asemat[i].latitude;
+                }
+            }
+        }
+    }
+    //console.log("GeoHaku()");
+    AsemanLokaatio.open("GET", "https://rata.digitraffic.fi/api/v1/metadata/stations", true);
+    AsemanLokaatio.send(null);
+    function getNearestStation(taul_asemat) {
+        var lyhinEtaisyys = 99999;
+        var lahinAsema;
+        for (var asema of taul_asemat) {
+            //console.log(distance(asema.latitude, asema.longitude));
+        }
+        for (var i = 0; i < taul_asemat.length; i++) {
+            var asema = taul_asemat[i];
+            //  console.dir(asema);
+            var dist = distance(asema.latitude, asema.longitude)
+            if (dist < lyhinEtaisyys) {
+                lyhinEtaisyys = dist;
+                lahinAsema = asema.stationShortCode;
+            }
+        }
+        console.log(lahinAsema + "," + lyhinEtaisyys);
+        lahtoasema = lahinAsema;
+        document.getElementById("lähtövalinta").value=lahinAsema;
+
+    }
+    // function nearestStation(lati, long) {
+    //     var lyhinEtaisyys = 99999;
+    //     for (var asema in taul_asemat) {
+    //         var asema = taul_asemat[asema]
+    //         console.log(asema.name)
+    //         if (asema.dist < lyhinEtaisyys) {
+    //             lyhinEtaisyys = asema.dist;
+    //             console.log(lyhinEtaisyys);
+    //         }
+    //}
+    function distance(lat2, lon2, unit) {
+        //lati;
+        //long;
+        //var lat2 = asemanlat;
+        //var lon2 = asemanlong;
+        unit = 'K';
+        var radlati = Math.PI * lati / 180;
+        var radlat2 = Math.PI * lat2 / 180;
+        var theta = long - lon2;
+        var radtheta = Math.PI * theta / 180;
+        var dist = Math.sin(radlati) * Math.sin(radlat2) + Math.cos(radlati) * Math.cos(radlat2) * Math.cos(radtheta);
+        if (dist > 1) {
+            dist = 1
+        }
+        dist = Math.acos(dist);
+        dist = dist * 180 / Math.PI;
+        dist = dist * 60 * 1.1515;
+        if (unit === "K") { dist = dist * 1.609344 };
+        if (unit === "N") { dist = dist * 0.8684 };
+        // console.dir(dist);
+        return dist;
+    }
+}
