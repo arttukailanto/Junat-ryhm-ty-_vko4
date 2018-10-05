@@ -1,2 +1,10 @@
 ﻿body {
+    background-image: url(kuvat/pienitausta.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
 }
+label {
+    color: Highlight;
+}
+

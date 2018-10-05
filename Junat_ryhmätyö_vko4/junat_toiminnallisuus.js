@@ -13,6 +13,7 @@ $("#loppuaika").val(nyt.toISOString().slice(0, -8));
 var alkuRimpsu = "https://rata.digitraffic.fi/api/v1/live-trains/station/";
 var lahtoasema = " ";
 var saapumisasema = " ";
+
 var optiot = { hour: '2-digit', minute: '2-digit', hour12: false };
 
 
@@ -36,7 +37,7 @@ var xmlhttp = new XMLHttpRequest();
 xmlhttp.onreadystatechange = function () {
     if (xmlhttp.readyState === 4) {
         if (xmlhttp.status === 200) {
-
+            var juna;
             var tulos = JSON.parse(xmlhttp.responseText);
             console.dir(tulos);
             for (var i = 0; i < tulos.length; ++i) {
@@ -44,9 +45,10 @@ xmlhttp.onreadystatechange = function () {
                 var juna = tulos[i];
                 var lahtoaika = new Date(juna.timeTableRows[0].scheduledTime).toLocaleTimeString("fi", { hour: '2-digit', minute: '2-digit', hour12: false });
                 var saapumisaika = new Date(getSaapumisaika(juna.timeTableRows, saapumisasema)).toLocaleTimeString("fi", optiot);
-                elem.appendChild(document.createTextNode(juna.trainType + juna.trainNumber + ", lähtee: " + lahtoaika + " saapuu: " + saapumisaika));
+                elem.appendChild(document.createTextNode("Juna nro:  " + juna.trainType + juna.trainNumber + ", lähtee: " + lahtoaika + " saapuu: " + saapumisaika));
                 lista.appendChild(elem);
             }
+            document.getElementById("testi1").innerHTML = juna.stationName.value;
             //document.getElementById("hae").innerText = "Hae data uudestaan painamalla nappulaa:";
            // document.getElementById("btn").style.visibility = "visible";
         } else {
@@ -229,10 +231,12 @@ function Etäisyys() {
         for (var i = 0; i < taul_asemat.length; i++) {
             var asema = taul_asemat[i];
             //  console.dir(asema);
-            var dist = distance(asema.latitude, asema.longitude)
-            if (dist < lyhinEtaisyys) {
-                lyhinEtaisyys = dist;
-                lahinAsema = asema.stationShortCode;
+            if (taul_asemat[i].passengerTraffic === true) {
+                var dist = distance(asema.latitude, asema.longitude)
+                if (dist < lyhinEtaisyys) {
+                    lyhinEtaisyys = dist;
+                    lahinAsema = asema.stationShortCode;
+                }
             }
         }
         console.log(lahinAsema + "," + lyhinEtaisyys);
